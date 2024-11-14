@@ -1,0 +1,74 @@
+---
+title: "ICA"
+author: "Andrew Wu"
+date: "November 2024"
+output:
+  html_document: default
+  pdf_document: default
+extra_dependencies:
+- amsmath
+---
+
+```{r}
+df <- read.table("emissionssw.dat", header=TRUE)
+head(df)
+```
+Quite a few outliers across all time series. Consider quantile clipping to prevent influence of these observations?
+Maybe even remove from data and don't bother trying to predict 
+```{r}
+plot.ts(df)
+lapply(names(df), function(col) {
+  acf(df[[col]], main = paste("ACF for", col))
+})
+```
+lag 1/5 have the highest autocorrelations, with the rest being lower. Makes sense given martingale property + same time of day at lag-5 mark. Since lag 1 has such high autocorrelation, may be worth trying a model fitted on first order differences.
+
+
+```{r}
+pairs(df)
+```
+
+```{r}
+m1 <- lm(nox ~ ., data=df)
+summary(m1)
+plot(m1)
+```
+looks like a quadratic u shaped relationship between residuals and fitted. Let's try squaring humidity since that was insignificant and looked nonlinear
+```{r}
+m2 <- lm(nox ~. + I(humidity^2), data=df)
+summary(m2)
+plot(m2)
+```
+Didn't help, what about windspeed since that was nonlinear too. Still seeing a larger fitted value gives larger variance. Polynomials degree two don't seem to work, though there is some improvement. Common theme is that humidity doesn't seem to be important.
+```{r}
+m3 <- lm(nox ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df)
+summary(m3)
+plot(m3)
+
+# try fitted WLS to this, didn't seem to help
+m3w <- lm(nox ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df, weights = 1/abs(resid(m3)))
+summary(m3w)
+plot(m3w)
+```
+
+More insights from question:
+- measurements sequential over one year, sorted by day,time. Need to take this dependence into account
+- hypothesis: noxem/ws are important, noxem is the source, ws is the dispersion. Humidity may have an impact, but so far it's not showing.
+
+General:
+- train/test set, CV? for model selection/evaluating
+performance while checking for overfitting
+
+Dealing with time dependence:
+- adding lagged/smoothed/rolling mean versions of variables
+- adding time index/seasonal predictor
+
+
+Tried first order differencing, not really any that much better than the 
+striaght linear model it seems. Still the same U-shaped residual problem.
+```{r}
+df["dy"] <- c(NaN, diff(df$nox))
+m4 <- lm(dy ~ noxem + ws + humidity, data=df)
+summary(m4)
+plot(m4)
+```
