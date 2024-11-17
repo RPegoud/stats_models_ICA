@@ -1,0 +1,19 @@
+---
+title: "Robust Final Model"
+author: "Andrew Wu"
+date: "2024-11-17"
+output: html_document
+---
+
+```{r}
+set.seed(42)
+df <- read.table("emissionssw.dat", header=TRUE)
+head(df)
+```
+
+```{r}
+library(robustbase)
+m <- lmrob(log(nox) ~ log(noxem) + ws, data=df)
+summary(m)
+plot(m)
+```

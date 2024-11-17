@@ -10,8 +10,23 @@ extra_dependencies:
 ---
 
 ```{r}
+set.seed(42)
 df <- read.table("emissionssw.dat", header=TRUE)
 head(df)
+```
+```{r}
+m1 <- lm(nox ~ ., data=df)
+summary(m1)
+plot(m1)
+```
+
+```{r}
+hist(df$nox)
+hist(log(df$nox))
+```
+
+```{r}
+boxplot(df)
 ```
 Quite a few outliers across all time series. Consider quantile clipping to prevent influence of these observations?
 Maybe even remove from data and don't bother trying to predict 
@@ -20,6 +35,15 @@ plot.ts(df)
 lapply(names(df), function(col) {
   acf(df[[col]], main = paste("ACF for", col))
 })
+
+plot(df$nox[1:6])
+acf(log(df$nox))
+par(mfrow=c(2,1))
+plot(df$noxem[1:13], type='l')
+plot(df$nox[1:13], type='l')
+```
+```{r}
+summary(df)
 ```
 lag 1/5 have the highest autocorrelations, with the rest being lower. Makes sense given martingale property + same time of day at lag-5 mark. Since lag 1 has such high autocorrelation, may be worth trying a model fitted on first order differences.
 
@@ -32,6 +56,10 @@ pairs(df)
 m1 <- lm(nox ~ ., data=df)
 summary(m1)
 plot(m1)
+# 
+# m1 <- lm(nox ~ ., data=df, subset=-c(156, 160, 161))
+# summary(m1)
+# plot(m1)
 ```
 looks like a quadratic u shaped relationship between residuals and fitted. Let's try squaring humidity since that was insignificant and looked nonlinear
 ```{r}
@@ -41,14 +69,31 @@ plot(m2)
 ```
 Didn't help, what about windspeed since that was nonlinear too. Still seeing a larger fitted value gives larger variance. Polynomials degree two don't seem to work, though there is some improvement. Common theme is that humidity doesn't seem to be important.
 ```{r}
-m3 <- lm(nox ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df)
-summary(m3)
-plot(m3)
-
-# try fitted WLS to this, didn't seem to help
-m3w <- lm(nox ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df, weights = 1/abs(resid(m3)))
+# try quantile clipping on data to deal with outliers. Park idea for now
+# library(raster)
+# dfclipped = clip.data(select(df, c('noxem', 'ws')), lower=0.01, upper=0.99)
+# print(dfclipped)
+# 
+# logging the response gives a good residuals vs fitted plot
+# Attempt to fit WLS
+# add convergence criterion
+max_iter = 100
+m3w <- lm(log(nox) ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df)
+for (i in 1:max_iter) {
+  m3w <- lm(log(nox) ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df, weights = 1/abs(resid(m3w)))
+}
 summary(m3w)
 plot(m3w)
+```
+
+```{r}
+library(MASS)
+mlog <- lm(log(nox) ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df)
+summary(mlog)
+plot(mlog)
+mlog_robust <- rlm(log(nox) ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df)
+summary(mlog_robust)
+plot(mlog_robust)
 ```
 
 More insights from question:
@@ -60,15 +105,34 @@ General:
 performance while checking for overfitting
 
 Dealing with time dependence:
-- adding lagged/smoothed/rolling mean versions of variables
-- adding time index/seasonal predictor
-
+- adding lagged/smoothed/rolling mean versions of variables (can try lag 1 given high autocorr)
+- adding time index/seasonal predictor? (low priority)
 
 Tried first order differencing, not really any that much better than the 
 striaght linear model it seems. Still the same U-shaped residual problem.
 ```{r}
 df["dy"] <- c(NaN, diff(df$nox))
-m4 <- lm(dy ~ noxem + ws + humidity, data=df)
+# m4 <- lm(dy ~ noxem + ws + humidity, data=df)
+m4 <- lm(dy ~ (noxem + ws)^2 + I(ws^2) + I(noxem^2), data=df)
 summary(m4)
 plot(m4)
+```
+
+```{r}
+m <- lm(log(nox) ~ log(noxem) + ws,data=df)
+summary(m)
+plot(m)
+```
+
+```{r}
+m <- lm(log(nox) ~ log(noxem) + ws + ws:log(noxem) + cos(seq(0, 2*pi, length.out=2022)),data=df)
+summary(m)
+plot(m)
+```
+
+```{r}
+library(robustbase)
+m <- lmrob(log(nox) ~ log(noxem) + ws, data=df)
+summary(m)
+plot(m)
 ```

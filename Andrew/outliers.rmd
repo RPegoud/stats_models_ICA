@@ -1,0 +1,70 @@
+---
+title: "Outlier experimentation"
+author: "Andrew Wu"
+date: "November 2024"
+output:
+  html_document: default
+---
+
+```{r}
+df <- read.table("emissionssw.dat", header=TRUE)
+head(df)
+```
+
+Lot of outliers observed in the response, based on interquartile range. Try logging. (low outliers now), but better looking boxplots.
+```{r}
+boxplot(log(df$nox))
+boxplot(df$noxem)
+boxplot(log(df$ws))
+boxplot(df$humidity)
+```
+
+Fit our flagship model + the robust version. Coefficients similar are and same sign which is good. Slight downward trend
+in the studentised residuals in both. Need to figure out how to compare the two models statistically if possible. Summary output for robust reg is difficult to interpret, since the difference isn't big, we could just use the ols instead.
+```{r}
+model <- lm(log(nox) ~ log(noxem) + 1/ws, data=df)
+summary(model)
+plot(model)
+
+# FIx this
+# predict_features <- data.frame(
+#   noxem=log(df$noxem), 
+#   ws=df$ws)[key_points, ]
+# cbind(exp(predict(model, predict_features)), df[key_points, "nox"])
+hist(resid(model))
+```
+
+```{r}
+library("robustbase")
+model <- lmrob(log(nox) ~ log(noxem) + ws, data=df)
+summary(model)
+plot(model)
+```
+
+Two other approaches for outliers to try:
+1. Detect outliers, remove the outliers, train, see how predictions do on the outliers
+2. Quantile clipping (response, covariates, both?).
+
+```{r}
+points_to_remove <- c(478, 510, 537, 550, 1735, 2002)
+model <- lm(log(nox) ~ log(noxem) + ws, data=df, subset=-points_to_remove)
+summary(model)
+plot(model)
+cbind(predict(model, df[points_to_remove, ]), df[points_to_remove, "nox"])
+```
+
+No obvious improvements due to quantile clipping the covariates.
+```{r}
+quantile_clip <- function(data, lower_quantile = 0.01, upper_quantile = 0.99) {
+  quantiles <- quantile(data, probs = c(lower_quantile, upper_quantile), na.rm = TRUE)
+  data_clipped <- pmax(pmin(data, quantiles[2]), quantiles[1])
+  return(data_clipped)
+}
+
+df_clipped <- quantile_clip(df[-1], lower_quantile = 0.01, upper_quantile = 0.99)
+df_clipped["nox"] <- df["nox"]
+model <- lm(log(nox) ~ log(noxem) + ws, data=df_clipped)
+summary(model)
+plot(model)
+```
+

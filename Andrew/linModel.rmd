@@ -1,0 +1,21 @@
+---
+title: "linear model"
+author: "Andrew Wu"
+date: "November 2024"
+output:
+  html_document: default
+pdf_document: default
+extra_dependencies:
+  - amsmath
+---
+  
+```{r}
+df <- read.table("emissionssw.dat", header=TRUE)
+head(df)
+```
+Linear model all covariates
+```{r}
+m1 <- lm(nox ~ ., data=df)
+summary(m1)
+plot(m1)
+```
