@@ -1,0 +1,780 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Keep aspect ratio if custom image width or height is specified
+    \setkeys{Gin}{keepaspectratio}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{r\_coursework}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{emissionssw}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{read.table}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{datasets/emissionssw.dat\PYZdq{}}\PY{p}{,}\PY{n}{header}\PY{o}{=}\PY{k+kc}{TRUE}\PY{p}{)}
+\PY{n}{n}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{nrow}\PY{p}{(}\PY{n}{emissionssw}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{emissionssw}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+      nox            noxem              ws            humidity       
+ Min.   :  1.2   Min.   : 102.5   Min.   : 0.100   Min.   :0.009332  
+ 1st Qu.: 47.7   1st Qu.: 675.0   1st Qu.: 1.033   1st Qu.:0.060673  
+ Median : 88.3   Median :2183.6   Median : 1.667   Median :0.100842  
+ Mean   :116.0   Mean   :2250.7   Mean   : 2.087   Mean   :0.171872  
+ 3rd Qu.:152.5   3rd Qu.:3741.7   3rd Qu.: 2.750   3rd Qu.:0.168508  
+ Max.   :694.5   Max.   :5362.1   Max.   :11.367   Max.   :4.099019  
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{118}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{with}\PY{p}{(}\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{12}\PY{p}{,}\PY{+w}{ }\PY{n}{repr.plot.height}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{8}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{p}{\PYZob{}}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{pin}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{20}\PY{p}{,}\PY{+w}{ }\PY{l+m}{20}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mfrow}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{4}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mar}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mgp}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{0.7}\PY{p}{,}\PY{+w}{ }\PY{l+m}{0}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{cex.lab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.axis}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.sub}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1.2}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{nox}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{NOx (PPB)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{noxem}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{NOx Emissions (unknown)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{ws}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Wind Speed (m/s)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{humidity}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{  }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Humidity (g/kg)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Index\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_2_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{cor}\PY{p}{(}\PY{n}{emissionssw}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    A matrix: 4 × 4 of type dbl
+\begin{tabular}{r|llll}
+  & nox & noxem & ws & humidity\\
+\hline
+	nox &  1.00000000 &  0.51758582 & -0.34754186 & -0.04739774\\
+	noxem &  0.51758582 &  1.00000000 &  0.11653505 & -0.03381921\\
+	ws & -0.34754186 &  0.11653505 &  1.00000000 &  0.01722212\\
+	humidity & -0.04739774 & -0.03381921 &  0.01722212 &  1.00000000\\
+\end{tabular}
+
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{98}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{with}\PY{p}{(}\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{8}\PY{p}{,}\PY{+w}{ }\PY{n}{repr.plot.height}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{8}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{p}{\PYZob{}}\PY{n+nf}{pairs}\PY{p}{(}\PY{n}{emissionssw}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_4_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{emissionssw.transformed}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{data.frame}\PY{p}{(}
+\PY{+w}{    }\PY{n}{log.nox}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{log}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{nox}\PY{p}{)}\PY{p}{,}
+\PY{+w}{    }\PY{n}{log.noxem}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{log}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{noxem}\PY{p}{)}\PY{p}{,}
+\PY{+w}{    }\PY{n}{ws}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{ws}\PY{p}{,}
+\PY{+w}{    }\PY{n}{ws\PYZus{}log.noxem}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{ws}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n+nf}{log}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{noxem}\PY{p}{)}\PY{p}{,}
+\PY{+w}{    }\PY{n}{cos}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{cos}\PY{p}{(}\PY{n+nf}{seq}\PY{p}{(}\PY{l+m}{0}\PY{p}{,}\PY{+w}{ }\PY{l+m}{2}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{k+kc}{pi}\PY{p}{,}\PY{+w}{ }\PY{n}{length.out}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{n}\PY{p}{)}\PY{p}{)}
+\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{100}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{with}\PY{p}{(}\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{12}\PY{p}{,}\PY{+w}{ }\PY{n}{repr.plot.height}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{12}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{p}{\PYZob{}}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{pin}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{20}\PY{p}{,}\PY{+w}{ }\PY{l+m}{20}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mfrow}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mar}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mgp}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{0.7}\PY{p}{,}\PY{+w}{ }\PY{l+m}{0}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{cex.lab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.axis}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.sub}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1.2}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{o}{\PYZdl{}}\PY{n}{log.nox}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Log NOx (log(PPB))\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{o}{\PYZdl{}}\PY{n}{log.noxem}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Log NOx Emissions (unknown)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{o}{\PYZdl{}}\PY{n}{ws}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Wind Speed (m/s)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{o}{\PYZdl{}}\PY{n}{ws\PYZus{}log.noxem}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{  }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Wind Speed * Log NOx Emissions (unknown)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{o}{\PYZdl{}}\PY{n}{cos}\PY{p}{,}\PY{+w}{ }\PY{n}{type}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Cosine Transformation (none)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Index\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_6_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+    log.nox         log.noxem           ws          ws\_log.noxem    
+ Min.   :0.1823   Min.   :4.630   Min.   : 0.100   Min.   : 0.5362  
+ 1st Qu.:3.8649   1st Qu.:6.515   1st Qu.: 1.033   1st Qu.: 7.3668  
+ Median :4.4807   Median :7.689   Median : 1.667   Median :11.5093  
+ Mean   :4.3844   Mean   :7.337   Mean   : 2.087   Mean   :15.4658  
+ 3rd Qu.:5.0272   3rd Qu.:8.227   3rd Qu.: 2.750   3rd Qu.:20.9508  
+ Max.   :6.5432   Max.   :8.587   Max.   :11.367   Max.   :86.8051  
+      cos            
+ Min.   :-0.9999988  
+ 1st Qu.:-0.7068313  
+ Median : 0.0007772  
+ Mean   : 0.0004946  
+ 3rd Qu.: 0.7079300  
+ Max.   : 1.0000000  
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{cor}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    A matrix: 5 × 5 of type dbl
+\begin{tabular}{r|lllll}
+  & log.nox & log.noxem & ws & ws\_log.noxem & cos\\
+\hline
+	log.nox &  1.0000000 &  0.6364005 & -0.43374077 & -0.28979383 &  0.11641074\\
+	log.noxem &  0.6364005 &  1.0000000 &  0.10332354 &  0.28046275 & -0.13782892\\
+	ws & -0.4337408 &  0.1033235 &  1.00000000 &  0.97513062 &  0.05175993\\
+	ws\_log.noxem & -0.2897938 &  0.2804628 &  0.97513062 &  1.00000000 &  0.01405774\\
+	cos &  0.1164107 & -0.1378289 &  0.05175993 &  0.01405774 &  1.00000000\\
+\end{tabular}
+
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{99}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{with}\PY{p}{(}\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{8}\PY{p}{,}\PY{+w}{ }\PY{n}{repr.plot.height}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{8}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{p}{\PYZob{}}\PY{n+nf}{pairs}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_9_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{analyze\PYZus{}model}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{function}\PY{p}{(}\PY{n}{model}\PY{p}{)}\PY{p}{\PYZob{}}
+\PY{+w}{    }\PY{n+nf}{print}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{model}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model}\PY{p}{,}\PY{+w}{ }\PY{n}{which}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}\PY{p}{,}\PY{+w}{ }\PY{n}{qqline}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kc}{TRUE}\PY{p}{,}\PY{+w}{ }\PY{n}{add.smooth}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kc}{FALSE}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1}\PY{p}{)}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+
+\PY{n}{analyze\PYZus{}model\PYZus{}iterative}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{function}\PY{p}{(}\PY{n}{formula}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{p}{,}\PY{+w}{ }\PY{n}{max\PYZus{}iter}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{100}\PY{p}{)}\PY{+w}{ }\PY{p}{\PYZob{}}
+\PY{+w}{    }\PY{n}{model}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{lm}\PY{p}{(}\PY{n}{formula}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{data}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{for }\PY{p}{(}\PY{n}{i}\PY{+w}{ }\PY{n}{in}\PY{+w}{ }\PY{l+m}{1}\PY{o}{:}\PY{n}{max\PYZus{}iter}\PY{p}{)}\PY{+w}{ }\PY{p}{\PYZob{}}
+\PY{+w}{        }\PY{n}{model}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{lm}\PY{p}{(}\PY{n}{formula}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{data}\PY{p}{,}\PY{+w}{ }\PY{n}{weights}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{o}{/}\PY{n+nf}{abs}\PY{p}{(}\PY{n+nf}{residuals}\PY{p}{(}\PY{n}{model}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{p}{\PYZcb{}}
+\PY{+w}{    }\PY{n+nf}{print}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{model}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model}\PY{p}{,}\PY{+w}{ }\PY{n}{which}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}\PY{p}{,}\PY{+w}{ }\PY{n}{qqline}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kc}{TRUE}\PY{p}{,}\PY{+w}{ }\PY{n}{add.smooth}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kc}{FALSE}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{return}\PY{p}{(}\PY{n}{model}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+
+\PY{n}{loov}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{function}\PY{p}{(}\PY{n}{formula}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{p}{)}\PY{p}{\PYZob{}}
+\PY{+w}{    }\PY{n}{y\PYZus{}preds}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{numeric}\PY{p}{(}\PY{l+m}{0}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{for }\PY{p}{(}\PY{n}{i}\PY{+w}{ }\PY{n}{in}\PY{+w}{ }\PY{l+m}{1}\PY{o}{:}\PY{n+nf}{nrow}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZob{}}
+\PY{+w}{        }\PY{n}{model}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{lm}\PY{p}{(}\PY{n}{formula}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{data}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{i}\PY{p}{,}\PY{p}{]}\PY{p}{)}
+\PY{+w}{        }\PY{n}{y\PYZus{}preds}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{predict}\PY{p}{(}\PY{n}{model}\PY{p}{,}\PY{+w}{ }\PY{n}{newdata}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{data}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{p}{]}\PY{p}{)}
+\PY{+w}{    }\PY{p}{\PYZcb{}}
+\PY{+w}{    }\PY{n+nf}{return}\PY{p}{(}\PY{n+nf}{data.frame}\PY{p}{(}\PY{n}{y\PYZus{}true}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{data}\PY{p}{[}\PY{n+nf}{as.character}\PY{p}{(}\PY{n}{formula}\PY{p}{)}\PY{p}{[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{,}\PY{+w}{ }\PY{n}{y\PYZus{}preds}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{y\PYZus{}preds}\PY{p}{)}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{120}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{with}\PY{p}{(}\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{12}\PY{p}{,}\PY{+w}{ }\PY{n}{repr.plot.height}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{4}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{p}{\PYZob{}}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{pin}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{20}\PY{p}{,}\PY{+w}{ }\PY{l+m}{20}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mfrow}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m}{2}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mar}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{1}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{mgp}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{l+m}{0.7}\PY{p}{,}\PY{+w}{ }\PY{l+m}{0}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{par}\PY{p}{(}\PY{n}{cex.lab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.axis}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1.5}\PY{p}{,}\PY{+w}{ }\PY{n}{cex.sub}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m}{1.2}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{hist}\PY{p}{(}\PY{n}{emissionssw}\PY{o}{\PYZdl{}}\PY{n}{nox}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Histogram of NOx (PBB)\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Frequency\PYZsq{}}\PY{p}{)}
+\PY{+w}{    }\PY{n+nf}{hist}\PY{p}{(}\PY{n}{emissionssw.transformed}\PY{o}{\PYZdl{}}\PY{n}{log.nox}\PY{p}{,}\PY{+w}{ }\PY{n}{main}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Histogram of Log(NOx) (Log(PBB))\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylab}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{Frequency\PYZsq{}}\PY{p}{)}
+\PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_11_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Baseline linear model with all covariates}
+\PY{n}{baseline\PYZus{}model}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{lm}\PY{p}{(}\PY{n}{nox}\PY{+w}{ }\PY{o}{\PYZti{}}\PY{+w}{ }\PY{n}{noxem}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{humidity}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{=}\PY{n}{emissionssw}\PY{p}{)}
+\PY{n}{loov\PYZus{}baseline}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{loov}\PY{p}{(}\PY{n}{nox}\PY{+w}{ }\PY{o}{\PYZti{}}\PY{+w}{ }\PY{n}{noxem}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{humidity}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{=}\PY{n}{emissionssw}\PY{p}{)}
+\PY{n+nf}{analyze\PYZus{}model}\PY{p}{(}\PY{n}{baseline\PYZus{}model}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:
+lm(formula = nox \textasciitilde{} noxem + ws + humidity, data = emissionssw)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-166.19  -42.65  -15.38   20.03  500.14
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept)  92.947559   3.699776  25.122   <2e-16 ***
+noxem         0.036152   0.001077  33.573   <2e-16 ***
+ws          -27.338040   1.113436 -24.553   <2e-16 ***
+humidity     -7.227542   5.705300  -1.267    0.205
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 73.89 on 2018 degrees of freedom
+Multiple R-squared:  0.437,     Adjusted R-squared:  0.4361
+F-statistic: 522.1 on 3 and 2018 DF,  p-value: < 2.2e-16
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_12_1.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Transformed model with interactions and time\PYZhy{}series features}
+\PY{n}{rejected\PYZus{}model}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{lm}\PY{p}{(}\PY{n}{log.nox}\PY{+w}{ }\PY{o}{\PYZti{}}\PY{+w}{ }\PY{n}{log.noxem}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{cos}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws\PYZus{}log.noxem}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{=}\PY{n}{emissionssw.transformed}\PY{p}{)}
+\PY{n}{loov\PYZus{}rejected}\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{loov}\PY{p}{(}\PY{n}{log.nox}\PY{+w}{ }\PY{o}{\PYZti{}}\PY{+w}{ }\PY{n}{log.noxem}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{cos}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws\PYZus{}log.noxem}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{=}\PY{n}{emissionssw.transformed}\PY{p}{)}
+\PY{n+nf}{analyze\PYZus{}model}\PY{p}{(}\PY{n}{rejected\PYZus{}model}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:
+lm(formula = log.nox \textasciitilde{} log.noxem + ws + cos + ws\_log.noxem, data =
+emissionssw.transformed)
+
+Residuals:
+     Min       1Q   Median       3Q      Max
+-1.97983 -0.29920  0.04903  0.31879  1.77914
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept)   1.013775   0.139058    7.29 4.42e-13 ***
+log.noxem     0.553072   0.018978   29.14  < 2e-16 ***
+ws           -0.775998   0.056208  -13.81  < 2e-16 ***
+cos           0.335390   0.015886   21.11  < 2e-16 ***
+ws\_log.noxem  0.060279   0.007554    7.98 2.44e-15 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4976 on 2017 degrees of freedom
+Multiple R-squared:  0.7237,    Adjusted R-squared:  0.7231
+F-statistic:  1320 on 4 and 2017 DF,  p-value: < 2.2e-16
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_13_1.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Recommended simplistic model}
+\PY{n}{recommended.model}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{lm}\PY{p}{(}\PY{n}{log.nox}\PY{+w}{ }\PY{o}{\PYZti{}}\PY{+w}{ }\PY{n}{log.noxem}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{=}\PY{n}{emissionssw.transformed}\PY{p}{)}
+\PY{n}{loov\PYZus{}rejected}\PY{+w}{ }\PY{o}{\PYZlt{}\PYZhy{}}\PY{+w}{ }\PY{n+nf}{loov}\PY{p}{(}\PY{n}{log.nox}\PY{+w}{ }\PY{o}{\PYZti{}}\PY{+w}{ }\PY{n}{log.noxem}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{ws}\PY{p}{,}\PY{+w}{  }\PY{n}{data}\PY{o}{=}\PY{n}{emissionssw.transformed}\PY{p}{)}
+\PY{n+nf}{analyze\PYZus{}model}\PY{p}{(}\PY{n}{model}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:
+lm(formula = log.nox \textasciitilde{} log.noxem + ws, data = emissionssw.transformed)
+
+Residuals:
+     Min       1Q   Median       3Q      Max
+-2.09712 -0.32843 -0.00142  0.35002  1.43815
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)  0.337195   0.090484   3.727 0.000199 ***
+log.noxem    0.643011   0.012234  52.561  < 2e-16 ***
+ws          -0.321170   0.008334 -38.540  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5539 on 2019 degrees of freedom
+Multiple R-squared:  0.6572,    Adjusted R-squared:  0.6569
+F-statistic:  1935 on 2 and 2019 DF,  p-value: < 2.2e-16
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{r_coursework_files/r_coursework_14_1.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
